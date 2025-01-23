@@ -33,6 +33,7 @@ with app.app_context():
         db.session.add(counter)
         db.session.commit()
 
+
 @app.route('/')
 def hello():
     counter = Counter.query.first()
