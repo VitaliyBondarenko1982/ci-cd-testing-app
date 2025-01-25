@@ -4,7 +4,6 @@ import os
 
 os.environ.setdefault('DB_CONNECTION', 'sqlite:///:memory:')
 
-
 from app import app, db
 
 
@@ -13,21 +12,16 @@ def client():
     app.config['TESTING'] = True
     client = app.test_client()
 
-
     # Setup the database
     with app.app_context():
         db.create_all()
 
-
     yield client
-
 
     # Teardown the database
     with app.app_context():
         db.session.remove()
         db.drop_all()
-
-
 
 
 def test_home_page(client):
@@ -36,12 +30,9 @@ def test_home_page(client):
     assert b'Docker is Awesome!' in response.data
     assert b'Page reload count: 1' in response.data
 
-
     # Check if counter increments
     second_response = client.get('/')
     assert b'Page reload count: 2' in second_response.data
-
-
 
 
 def test_docker_logo(client):
@@ -51,8 +42,6 @@ def test_docker_logo(client):
     assert response.content_type == 'image/png'
 
 
-
-
 def test_health_check(client):
     """Test the health check endpoint."""
     response = client.get('/health')
@@ -60,15 +49,11 @@ def test_health_check(client):
     assert response.data == b'Healthy'
 
 
-
-
 def test_readiness_check(client):
     """Test the readiness check."""
     with patch('app.time.time', return_value=0):
         response = client.get('/ready')
         assert response.status_code == 503
-
-
 
 
 def test_external_call(client):
@@ -79,4 +64,3 @@ def test_external_call(client):
         response = client.get('/external-call')
         assert b'Extarnal call response: Success' in response.data
         assert response.status_code == 200
-
